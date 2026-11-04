@@ -45,7 +45,7 @@
             align-items: flex-start;
             cursor: pointer;
             transition: background 0.2s;
-            flex-wrap: wrap; /* 讓展開的區塊可以換行 */
+            flex-wrap: wrap;
         }
         .event-item:hover {
             background: #fafafa;
@@ -84,9 +84,14 @@
         }
         .countdown {
             font-size: 12px;
-            color: #d93025;
             margin-top: 4px;
+            font-weight: bold;
         }
+        /* 狀態顏色 */
+        .status-active { color: #1e8e3e; } /* 綠色 */
+        .status-ended { color: #d93025; }  /* 紅色 */
+        .status-upcoming { color: #f29900; } /* 黃色 */
+        
         /* 展開的詳細紀錄區塊 */
         .details-panel {
             display: none;
@@ -113,7 +118,8 @@
     <input type="text" class="search-box" placeholder="搜尋場次名稱或平台...">
     
     <div class="event-list" id="event-list">
-        <!-- 場次 1 -->
+        
+        <!-- 場次 1：藝聲（已結束） -->
         <div class="event-item" onclick="toggleDetails(this)">
             <div class="info">
                 <span class="platform-tag">ALL MY DAY</span>
@@ -121,16 +127,15 @@
             </div>
             <div class="sales-info">
                 <div class="sales-number">298 <span class="sales-unit">本</span></div>
-                <div class="countdown">🟢 應募中 (剩 2 天)</div>
+                <div class="countdown status-ended">🔴 應募結束</div>
             </div>
             <div class="details-panel">
                 <div style="font-weight:bold; margin-bottom:8px;">📈 歷史紀錄：</div>
-                <div class="history-item">11/04 14:00 ▶ 總數 298 (+5)</div>
-                <div class="history-item">11/04 13:00 ▶ 總數 293 (+10)</div>
+                <div class="history-item">11/02 23:59 ▶ 總數 298 (最終數字)</div>
             </div>
         </div>
 
-        <!-- 場次 2 -->
+        <!-- 場次 2：SUNGHANBIN（應募中） -->
         <div class="event-item" onclick="toggleDetails(this)">
             <div class="info">
                 <span class="platform-tag">ALL MY DAY</span>
@@ -138,12 +143,14 @@
             </div>
             <div class="sales-info">
                 <div class="sales-number">0 <span class="sales-unit">本</span></div>
-                <div class="countdown">🟡 尚未開始</div>
+                <div class="countdown status-active">🟢 應募中 (剩 5 天)</div>
             </div>
             <div class="details-panel">
-                <div class="history-item">等待主辦方開賣...</div>
+                <div style="font-weight:bold; margin-bottom:8px;">📈 歷史紀錄：</div>
+                <div class="history-item">11/04 15:00 ▶ 等待第一筆訂單...</div>
             </div>
         </div>
+
     </div>
 </div>
 
