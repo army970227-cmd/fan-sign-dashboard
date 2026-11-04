@@ -1,1 +1,113 @@
-
+{
+  "latest": {
+    "46756ad6feef74d93": 941,
+    "46756ae7f90ca1eb4": 0
+  },
+  "history": [
+    {
+      "time": "2026-10-28 12:25:05",
+      "name": "YOUNGSEO (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 0,
+      "change": 0
+    },
+    {
+      "time": "2026-10-28 12:25:05",
+      "name": "ANNIE (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 0,
+      "change": 0
+    },
+    {
+      "time": "2026-10-28 12:25:05",
+      "name": "TARZZAN (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 0,
+      "change": 0
+    },
+    {
+      "time": "2026-10-28 12:25:05",
+      "name": "BAILEY (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 2,
+      "change": 0
+    },
+    {
+      "time": "2026-10-28 12:25:05",
+      "name": "WOOCHAN (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 30,
+      "change": 0
+    },
+    {
+      "time": "2026-10-30 21:39:24",
+      "name": "YOUNGSEO (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 130,
+      "change": 15
+    },
+    {
+      "time": "2026-10-30 21:39:24",
+      "name": "ANNIE (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 157,
+      "change": 17
+    },
+    {
+      "time": "2026-10-30 21:39:24",
+      "name": "TARZZAN (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 58,
+      "change": 0
+    },
+    {
+      "time": "2026-10-30 21:39:24",
+      "name": "BAILEY (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 121,
+      "change": 1
+    },
+    {
+      "time": "2026-10-30 21:39:24",
+      "name": "WOOCHAN (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 149,
+      "change": 9
+    },
+    {
+      "time": "2026-11-05 01:59:58",
+      "name": "YOUNGSEO (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 150,
+      "change": 0
+    },
+    {
+      "time": "2026-11-05 01:59:58",
+      "name": "ANNIE (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 297,
+      "change": 0
+    },
+    {
+      "time": "2026-11-05 01:59:58",
+      "name": "TARZZAN (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 81,
+      "change": 0
+    },
+    {
+      "time": "2026-11-05 01:59:58",
+      "name": "BAILEY (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 165,
+      "change": 0
+    },
+    {
+      "time": "2026-11-05 01:59:58",
+      "name": "WOOCHAN (imini_adp_1108_videocall)",
+      "platform": "imini",
+      "total": 294,
+      "change": 0
+    }
+  ]
+}
