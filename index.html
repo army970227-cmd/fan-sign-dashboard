@@ -86,11 +86,8 @@
             font-size: 12px;
             margin-top: 4px;
             font-weight: bold;
+            color: #1e8e3e;
         }
-        /* 狀態顏色 */
-        .status-active { color: #1e8e3e; } /* 綠色 */
-        .status-ended { color: #d93025; }  /* 紅色 */
-        .status-upcoming { color: #f29900; } /* 黃色 */
         
         /* 展開的詳細紀錄區塊 */
         .details-panel {
@@ -102,12 +99,21 @@
             font-size: 14px;
             color: #666;
             border-top: 1px dashed #ddd;
+            max-height: 200px;
+            overflow-y: auto;
         }
         .details-panel.active {
             display: block;
         }
         .history-item {
             margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .loading {
+            text-align: center;
+            color: #888;
+            padding: 20px;
         }
     </style>
 </head>
@@ -115,53 +121,140 @@
 
 <div class="container">
     <h1>🔍 Fan Sign Dashboard</h1>
-    <input type="text" class="search-box" placeholder="搜尋場次名稱或平台...">
+    <input type="text" id="search" class="search-box" placeholder="搜尋場次名稱或平台...">
     
     <div class="event-list" id="event-list">
-        
-        <!-- 場次 1：藝聲（已結束，真實數據 941） -->
-        <div class="event-item" onclick="toggleDetails(this)">
-            <div class="info">
-                <span class="platform-tag">ALL MY DAY</span>
-                <span class="event-name">YESUNG 藝聲 應募活動</span>
-            </div>
-            <div class="sales-info">
-                <div class="sales-number">941 <span class="sales-unit">本</span></div>
-                <div class="countdown status-ended">🔴 應募結束</div>
-            </div>
-            <div class="details-panel">
-                <div style="font-weight:bold; margin-bottom:8px;">📈 歷史紀錄：</div>
-                <div class="history-item">11/02 23:59 ▶ 總數 941 (最終數字)</div>
-            </div>
-        </div>
-
-        <!-- 場次 2：SUNGHANBIN（應募中） -->
-        <div class="event-item" onclick="toggleDetails(this)">
-            <div class="info">
-                <span class="platform-tag">ALL MY DAY</span>
-                <span class="event-name">SUNGHANBIN 高雄簽售</span>
-            </div>
-            <div class="sales-info">
-                <div class="sales-number">0 <span class="sales-unit">本</span></div>
-                <div class="countdown status-active">🟢 應募中 (剩 5 天)</div>
-            </div>
-            <div class="details-panel">
-                <div style="font-weight:bold; margin-bottom:8px;">📈 歷史紀錄：</div>
-                <div class="history-item">11/04 15:00 ▶ 等待第一筆訂單...</div>
-            </div>
-        </div>
-
+        <div class="loading">資料載入中，請稍候...</div>
     </div>
 </div>
 
 <script>
-    // 點擊卡片展開/收起詳細資訊的邏輯
+    let globalData = [];
+    let historyData = [];
+
+    // 1. 初始化，去抓 GitHub 上的 data.json
+    async function loadData() {
+        try {
+            // 加上時間戳記避免瀏覽器快取
+            const res = await fetch('data.json?t=' + new Date().getTime());
+            const db = await res.json();
+            
+            historyData = db.history || [];
+            const latest = db.latest || {};
+
+            // 整理要顯示的資料
+            const eventsMap = {};
+            historyData.forEach(item => {
+                // 如果這個場次還沒被加進地圖，就初始化
+                if (!eventsMap[item.name]) {
+                    eventsMap[item.name] = {
+                        name: item.name,
+                        platform: item.platform || "ALL MY DAY", // 預設平台
+                        total: 0,
+                        history: []
+                    };
+                }
+                // 把歷史紀錄塞進去（最新的在上面）
+                eventsMap[item.name].history.unshift(item);
+            });
+
+            // 更新總數為最新的數字
+            for (let name in eventsMap) {
+                const histories = eventsMap[item.name];
+                if (histories && histories.history.length > 0) {
+                    eventsMap[name].total = histories.history[0].total;
+                }
+            }
+
+            globalData = Object.values(eventsMap);
+            
+            // 如果歷史紀錄是空的，就先放個假資料擋著，避免畫面全空
+            if (globalData.length === 0) {
+                globalData = [
+                    { name: "YESUNG 藝聲 應募活動", platform: "ALL MY DAY", total: 941, history: [{time: "11/02 23:59", total: 941, change: 0}] },
+                    { name: "SUNGHANBIN 高雄簽售", platform: "ALL MY DAY", total: 0, history: [{time: "11/04 15:00", total: 0, change: 0}] }
+                ];
+            }
+
+            renderList(globalData);
+        } catch (e) {
+            console.error("讀取失敗", e);
+            document.getElementById('event-list').innerHTML = '<div class="loading" style="color:red">資料讀取失敗，請重整網頁</div>';
+        }
+    }
+
+    // 2. 渲染首頁列表
+    function renderList(data) {
+        const listEl = document.getElementById('event-list');
+        listEl.innerHTML = '';
+
+        if (data.length === 0) {
+            listEl.innerHTML = '<div class="loading">找不到符合的場次</div>';
+            return;
+        }
+
+        data.forEach((event, index) => {
+            // 判斷狀態（這裡簡化，未來可以寫更精確的時間判斷）
+            const isEnded = event.name.includes("藝聲"); // 簡單示範
+            const statusClass = isEnded ? "status-ended" : "status-active";
+            const statusText = isEnded ? "🔴 應募結束" : "🟢 應募中";
+
+            const div = document.createElement('div');
+            div.className = 'event-item';
+            div.onclick = () => toggleDetails(div);
+
+            // 產生歷史紀錄的 HTML
+            let historyHtml = '';
+            event.history.forEach(h => {
+                const changeColor = h.change > 0 ? '#1e8e3e' : (h.change < 0 ? '#d93025' : '#666');
+                const changeText = h.change > 0 ? `+${h.change}` : h.change;
+                historyHtml += `<div class="history-item">
+                    <span>${h.time}</span>
+                    <span>總數 ${h.total} <span style="color:${changeColor}; font-weight:bold;">(${changeText})</span></span>
+                </div>`;
+            });
+
+            div.innerHTML = `
+                <div class="info">
+                    <span class="platform-tag">${event.platform}</span>
+                    <span class="event-name">${event.name}</span>
+                </div>
+                <div class="sales-info">
+                    <div class="sales-number">${event.total} <span class="sales-unit">本</span></div>
+                    <div class="countdown ${statusClass}">${statusText}</div>
+                </div>
+                <div class="details-panel">
+                    <div style="font-weight:bold; margin-bottom:8px;">📈 歷史紀錄：</div>
+                    ${historyHtml}
+                </div>
+            `;
+            listEl.appendChild(div);
+        });
+    }
+
+    // 點擊卡片展開/收起
     function toggleDetails(element) {
         const panel = element.querySelector('.details-panel');
         if (panel) {
             panel.classList.toggle('active');
         }
     }
+
+    // 搜尋功能
+    document.getElementById('search').addEventListener('input', function(e) {
+        const keyword = e.target.value.toLowerCase();
+        const filtered = globalData.filter(item => 
+            item.name.toLowerCase().includes(keyword) || 
+            item.platform.toLowerCase().includes(keyword)
+        );
+        renderList(filtered);
+    });
+
+    // 頁面載入時執行
+    loadData();
+    
+    // 每 5 分鐘自動重新抓取網頁資料
+    setInterval(loadData, 300000);
 </script>
 
 </body>
