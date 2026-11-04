@@ -1,0 +1,28 @@
+name: 每五分鐘抓取銷量
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得程式碼
+        uses: actions/checkout@v3
+      - name: 設定 Python 環境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: 安裝依賴套件
+        run: pip install requests
+      - name: 執行抓取腳本
+        run: python tracker.py
+      - name: 提交更新回 GitHub
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data.json
+          git commit -m "自動更新銷量資料" || exit 0
+          git push
